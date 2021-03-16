@@ -1,0 +1,599 @@
+{
+	"info": {
+		"_postman_id": "543157a2-2a1e-4ece-b7ee-224a09adf052",
+		"name": "Talent Hub Background Check Integration",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Configure Talent Hub Integrations",
+			"item": [
+				{
+					"name": "Register Talent Hub Integration",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-restli-method",
+								"value": "partial_update",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"patch\": {\n    \"$set\": {\n      \"displayName\": {\n        \"localized\": {\n          \"en_US\": \"<display_name>\"\n        }\n      },\n      \"description\": {\n        \"localized\": {\n          \"en_US\": \"<display_description>\"\n        }\n      },\n      \"onboardingUrl\": \"{{onboarding_url}}\",\n      \"callbackUrl\": \"{{callback_url}}\"\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "https://api.linkedin.com/v2/hireThirdPartyExtensionProviders/extensionType=BACKGROUND_CHECK&extensionProvider=THIRD_PARTY",
+							"protocol": "https",
+							"host": [
+								"api",
+								"linkedin",
+								"com"
+							],
+							"path": [
+								"v2",
+								"hireThirdPartyExtensionProviders",
+								"extensionType=BACKGROUND_CHECK&extensionProvider=THIRD_PARTY"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Receive Customer Onboarding Request(Mimic LI Push Notification)",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-restli-method",
+								"type": "text",
+								"value": "partial_update"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{onboarding_url}}?hiringContext={{hiring_context}}&extensionType=BACKGROUND_CHECK&redirectUrl={{redirectUrl}}&signature={signature}\n",
+							"host": [
+								"{{onboarding_url}}"
+							],
+							"query": [
+								{
+									"key": "hiringContext",
+									"value": "{{hiring_context}}"
+								},
+								{
+									"key": "extensionType",
+									"value": "BACKGROUND_CHECK"
+								},
+								{
+									"key": "redirectUrl",
+									"value": "{{redirectUrl}}"
+								},
+								{
+									"key": "signature",
+									"value": "{signature}\n"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Customer Integration",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-restli-method",
+								"type": "text",
+								"value": "partial_update"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\t\t\t{\n\t\t\t\t\"patch\": {\n\t\t\t\t\t\"$set\": {\n\t\t\t\t\t\t\"providerConfiguration\": {\n\t\t\t\t\t\t\t\"backgroundCheckConfiguration\": {\n\t\t\t\t\t\t\t\t\"availablePackages\": [{\n\t\t\t\t\t\t\t\t\t\t\"packageId\": \"PKG_1305\",\n\t\t\t\t\t\t\t\t\t\t\"displayName\": {\n\t\t\t\t\t\t\t\t\t\t\t\"localized\": {\n\t\t\t\t\t\t\t\t\t\t\t\t\"en_US\": \"Basic\"\n\t\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\t\"packageId\": \"PKG_1401\",\n\t\t\t\t\t\t\t\t\t\t\"displayName\": {\n\t\t\t\t\t\t\t\t\t\t\t\"localized\": {\n\t\t\t\t\t\t\t\t\t\t\t\t\"en_US\": \"Standard\"\n\t\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t]\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t},\n\t\t\t\t\t\t\"status\": \"ENABLED\"\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}"
+						},
+						"url": {
+							"raw": "https://api.linkedin.com/v2/hireThirdPartyExtensions/hiringContext={{hiring_context}}&extensionType=BACKGROUND_CHECK&extensionProvider=THIRD_PARTY",
+							"protocol": "https",
+							"host": [
+								"api",
+								"linkedin",
+								"com"
+							],
+							"path": [
+								"v2",
+								"hireThirdPartyExtensions",
+								"hiringContext={{hiring_context}}&extensionType=BACKGROUND_CHECK&extensionProvider=THIRD_PARTY"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Talent Hub Background Check API",
+			"item": [
+				{
+					"name": "Running Background Check(Mimic LI Push Notification)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-restli-method",
+								"type": "text",
+								"value": "partial_update"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\"Content-Type\": \"application/json\",\r\n\"X-LI-Signature\": \"5a1c2fdbd16fbba7e3816fa3ac3f05835d6bef9364b5c\",\r\n\"Content-Length\": \"186\",\r\n\"Connection\": \"Keep-Alive\",\r\n\"Accept-Encoding\": \"gzip,deflate\"\r\n\r\n{  \r\n  \"type\": \"CREATE_THIRD_PARTY_BACKGROUND_CHECK\",\r\n  \"hiringContext\": \"{{hiring_context}}\",\r\n  \"backgroundCheckId\": \"ODE1OGNkNzItYzUxNi00MjBkLTlhMT\",\r\n  \"candidateEmail\": \"test-candidate@outlook.com\",\r\n  \"configuration\":{\"packageIds\":[\"PKG_1305\", \"PKG_1401\"]},\r\n  \"candidateFirstName\": \"test\",\r\n  \"candidateLastName\": \"candidate\",\r\n  \"requesterEmailAddress\": \"test-requester@outlook.com\",\r\n  \"requesterFirstName\": \"test\",\r\n  \"requesterLastName\": \"requester\"\r\n}"
+						},
+						"url": {
+							"raw": "{{callback_url}}",
+							"host": [
+								"{{callback_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Third Party Background Check - PROVIDER_READY",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-restli-method",
+								"type": "text",
+								"value": "partial_update"
+							},
+							{
+								"key": "X-LinkedIn-traceDataContext",
+								"value": "forceTraceEnabled=true,debugEnabled=true,traceGroupingKey=akpillai-123",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"patch\": {\r\n    \"$set\": {\r\n      \"backgroundCheckUrl\": \"https://www.google.com/\",\r\n      \"status\": \"STARTED\"\r\n    }\r\n  }\r\n}"
+						},
+						"url": {
+							"raw": "https://api.linkedin.com/v2/hireThirdPartyBackgroundChecks/hiringContext={{hiring_context}}&backgroundCheckId=\tODE1OGNkNzItYzUxNi00MjBkLTlhMT&extensionProvider=THIRD_PARTY",
+							"protocol": "https",
+							"host": [
+								"api",
+								"linkedin",
+								"com"
+							],
+							"path": [
+								"v2",
+								"hireThirdPartyBackgroundChecks",
+								"hiringContext={{hiring_context}}&backgroundCheckId=\tODE1OGNkNzItYzUxNi00MjBkLTlhMT&extensionProvider=THIRD_PARTY"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Third Party Background Check - STARTED",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-restli-method",
+								"type": "text",
+								"value": "partial_update"
+							},
+							{
+								"key": "X-LinkedIn-traceDataContext",
+								"value": "forceTraceEnabled=true,debugEnabled=true,traceGroupingKey=akpillai-123",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"patch\": {\r\n    \"$set\": {\r\n      \"backgroundCheckUrl\": \"https://www.google.com/\",\r\n      \"status\": \"STARTED\"\r\n    }\r\n  }\r\n}"
+						},
+						"url": {
+							"raw": "https://api.linkedin.com/v2/hireThirdPartyBackgroundChecks/hiringContext={{hiring_context}}&backgroundCheckId=\tODE1OGNkNzItYzUxNi00MjBkLTlhMT&extensionProvider=THIRD_PARTY",
+							"protocol": "https",
+							"host": [
+								"api",
+								"linkedin",
+								"com"
+							],
+							"path": [
+								"v2",
+								"hireThirdPartyBackgroundChecks",
+								"hiringContext={{hiring_context}}&backgroundCheckId=\tODE1OGNkNzItYzUxNi00MjBkLTlhMT&extensionProvider=THIRD_PARTY"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Third Party Background Check - COMPLETED",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-restli-method",
+								"type": "text",
+								"value": "partial_update"
+							},
+							{
+								"key": "X-LinkedIn-traceDataContext",
+								"type": "text",
+								"value": "forceTraceEnabled=true,debugEnabled=true,traceGroupingKey=akpillai-123"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"patch\": {\r\n    \"$set\": {\r\n      \"backgroundCheckUrl\": \"{Provide Http(s) page which will give the background check details}\",\r\n      \"status\": \"COMPLETED\"\r\n    }\r\n  }\r\n}"
+						},
+						"url": {
+							"raw": "https://api.linkedin.com/v2/hireThirdPartyBackgroundChecks/hiringContext={{hiring_context}}&backgroundCheckId=MDQ3MTc4OWYtMzY0Yy00MTY4LTkzNjgtNmZiM2RiYjcxNGM5OjE2MDUwMDg1MjcyNjk6MTM=&extensionProvider=THIRD_PARTY",
+							"protocol": "https",
+							"host": [
+								"api",
+								"linkedin",
+								"com"
+							],
+							"path": [
+								"v2",
+								"hireThirdPartyBackgroundChecks",
+								"hiringContext={{hiring_context}}&backgroundCheckId=MDQ3MTc4OWYtMzY0Yy00MTY4LTkzNjgtNmZiM2RiYjcxNGM5OjE2MDUwMDg1MjcyNjk6MTM=&extensionProvider=THIRD_PARTY"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Third Party Background Check -PROVIDER_EXCEPTION",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-restli-method",
+								"type": "text",
+								"value": "partial_update"
+							},
+							{
+								"key": "X-LinkedIn-traceDataContext",
+								"value": "forceTraceEnabled=true,debugEnabled=true,traceGroupingKey=akpillai-124",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"patch\": {\r\n    \"$set\": {\r\n      \"backgroundCheckUrl\": \"{Provide Http(s) site URL which will provide details of exception},\r\n      \"status\":\"PROVIDER_EXCEPTION\",\r\n      \"providerExceptionType\" : \"ACCOUNT_NOT_ELIGIBLE\"\r\n    }\r\n  }\r\n}"
+						},
+						"url": {
+							"raw": "https://api.linkedin.com/v2/hireThirdPartyBackgroundChecks/hiringContext={{hiring_context}}&backgroundCheckId=MzU0NTcyYzMtZTRiYi00ZTQ3LWIxM2MtNTFkNWU1YjE5YjU5OjE2MDQ2NTExODQ5NzU6MTM=&extensionProvider=THIRD_PARTY",
+							"protocol": "https",
+							"host": [
+								"api",
+								"linkedin",
+								"com"
+							],
+							"path": [
+								"v2",
+								"hireThirdPartyBackgroundChecks",
+								"hiringContext={{hiring_context}}&backgroundCheckId=MzU0NTcyYzMtZTRiYi00ZTQ3LWIxM2MtNTFkNWU1YjE5YjU5OjE2MDQ2NTExODQ5NzU6MTM=&extensionProvider=THIRD_PARTY"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete ThirdParty Background Check(Mimic LI Push Notification)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-restli-method",
+								"type": "text",
+								"value": "partial_update"
+							},
+							{
+								"key": "X-LinkedIn-traceDataContext",
+								"type": "text",
+								"value": "forceTraceEnabled=true,debugEnabled=true,traceGroupingKey=akpillai-123",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\"Content-Type\": \"application/json\",\r\n\"X-LI-Signature\": \"6dd068f646c75148045ef72eec53a8336b5a0fe86f02dfd53778108f8f8a0983\",\r\n\"Content-Length\": \"384\",\r\n\"Connection\": \"close\",\r\n\"Accept-Encoding\": \"gzip,deflate\"\r\n\r\n{  \r\n  \"type\": \"DELETE_THIRD_PARTY_BACKGROUND_CHECK\",\r\n  \"hiringContext\": \"{{hiring_context}}\",\r\n  \"backgroundCheckId\": \"NDVhM2EwMzgtYzQyYS00OWViLTkxYWEtYjliYmIwYTMyOTQxOjE2MDQ5MTU4Njk5NDA6MTM=\"\r\n}"
+						},
+						"url": {
+							"raw": "{{callback_url}}",
+							"host": [
+								"{{callback_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Disable Customer integration",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-restli-method",
+								"type": "text",
+								"value": "partial_update"
+							},
+							{
+								"key": "X-LinkedIn-traceDataContext",
+								"type": "text",
+								"value": "forceTraceEnabled=true,debugEnabled=true,traceGroupingKey=akpillai-123",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\"Content-Type\":\"application/json\",\r\n\"X-LI-Signature\":\"d3756e445a8065c0f38c2182c502f8229800eb2c6a9f3b4a1fdf152af867e6fc\",\r\n\"Content-Length\":\"107\",\r\n\"Connection\":\"Keep-Alive\",\r\n\"Accept-Encoding\":\"gzip,deflate\"\r\n\r\n{\r\n   \"type\":\"DELETE_THIRD_PARTY_EXTENSION\",\r\n   \"hiringContext\": \"{{hiring_context}}\"\r\n}"
+						},
+						"url": {
+							"raw": "{{callback_url}}",
+							"host": [
+								"{{callback_url}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Application Access Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.globals.set(\"customer_access_token\", jsonData.access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "text/plain",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "{{app_client_id}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{app_client_secret}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://www.linkedin.com/oauth/v2/accessToken",
+					"protocol": "https",
+					"host": [
+						"www",
+						"linkedin",
+						"com"
+					],
+					"path": [
+						"oauth",
+						"v2",
+						"accessToken"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "app_client_id",
+			"value": "<customer_app_client_id>"
+		},
+		{
+			"key": "app_client_secret",
+			"value": "<customer_app_client_secret>"
+		},
+		{
+			"key": "onboarding_url",
+			"value": "<integration_context_obtained_via_LinkedIn_or_using_ATS_Integration_Confiuration_Plugin>"
+		},
+		{
+			"key": "callback_url",
+			"value": "<unique_id_for_customer_in_your_ATS>"
+		},
+		{
+			"key": "hiring_context",
+			"value": "<customer_contract_id>"
+		},
+		{
+			"key": "redirectUrl",
+			"value": "<redirect_url>"
+		}
+	]
+}
